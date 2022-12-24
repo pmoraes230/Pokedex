@@ -1,8 +1,24 @@
 const pokeApi = {};
 
+function convertPokeApiDeteilToPokemon(pokeDeteil) {
+	const pokemon = new Pokemon()
+	pokemon.number = pokeDeteil.id
+	pokemon.name = pokeDeteil.name
+
+	const types = pokeDeteil.types.map((typeSlot) => typeSlot.type.name)
+	const {type} = types
+
+	pokemon.types = types
+	pokemon.type = type
+	pokemon.photo = pokeDeteil.sprites.other.dream_world.front_default
+
+	return pokemon
+}
+
 pokeApi.pokemonsDeteil = (pokemon) => {
 	return fetch(pokemon.url)
 	.then((reponse) => reponse.json())
+	.then(convertPokeApiDeteilToPokemon)
 }
 
 pokeApi.getPokemons = (offset = 0, limit = 10) => {
@@ -15,11 +31,4 @@ pokeApi.getPokemons = (offset = 0, limit = 10) => {
 	.then((pokemonsDeteil) => pokemonsDeteil)
 }
 
-Promise.all([
-	fetch('https://pokeapi.co/api/v2/pokemon/1'),
-	fetch('https://pokeapi.co/api/v2/pokemon/2'),
-	fetch('https://pokeapi.co/api/v2/pokemon/3'),
-	fetch('https://pokeapi.co/api/v2/pokemon/4')
-]).then((results) => {
-	console.log(results)
-})
+
